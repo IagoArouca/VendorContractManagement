@@ -1,0 +1,37 @@
+{
+  "name": "vendor-contracts",
+  "version": "1.0.0",
+  "description": "Enterprise-grade Vendor Contract Management Side-by-Side Extension",
+  "repository": "mock-repository",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^8",
+    "express": "^4",
+    "@sap/xssec": "^4",
+    "passport": "^0.7.0"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^1",
+    "@sap/cds-dk": "^8"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch": "cds watch",
+    "test": "jest"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sql"
+      },
+      "auth": {
+        "kind": "mocked"
+      }
+    },
+    "profile": "development",
+    "sql": {
+      "native_typer": true
+    }
+  }
+}
