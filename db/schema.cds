@@ -11,7 +11,7 @@ type ContractStatus : String enum {
 }
 
 entity Contracts : cuid, managed {
-    contractNumber : String(10) @title: 'Contract Number';
+    contractNumber : String(10)  @title: 'Contract Number';
     title          : String(100) @assert.notNull @title: 'Title';
     description    : String(500) @title: 'Description';
     status         : ContractStatus default 'D' @title: 'Status';
