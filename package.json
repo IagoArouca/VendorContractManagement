@@ -26,8 +26,36 @@
         "kind": "sql"
       },
       "auth": {
-        "kind": "mocked"
-      }
+        "kind": "mocked",
+          "users": {
+            "viewer": {
+              "password": "viewer",
+              "roles": [
+                "Viewer"
+              ]
+            },
+            "manager": {
+              "password": "manager",
+              "roles": [
+                "Manager"
+              ]
+            },
+            "approver": {
+              "password": "approver",
+              "roles": [
+                "Approver"
+              ]
+            },
+            "admin": {
+              "password": "admin",
+              "roles": [
+                "Viewer",
+                "Manager",
+                "Approver"
+              ]
+            }
+          }
+    }
     },
     "profile": "development",
     "sql": {
