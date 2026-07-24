@@ -2,7 +2,11 @@ const cds = require('@sap/cds');
 
 class ContractService extends cds.ApplicationService {
     async init() {
-        const { Contracts } = this.entities;
+        console.log(process.env.SAP_API_KEY);
+        const { Contracts, BusinessPartners } = this.entities;
+
+        console.log(this.entities);
+        console.log(BusinessPartners);
 
         const BPsrv = await cds.connect.to('API_BUSINESS_PARTNER');
 
@@ -43,8 +47,15 @@ class ContractService extends cds.ApplicationService {
             }
         }
 
+
+
         this.before(['CREATE', 'UPDATE', 'NEW', 'SAVE'], 'Contracts.drafts', validateContract);
         this.before(['CREATE', 'UPDATE'], 'Contracts', validateContract);
+        this.on('READ', BusinessPartners, async (req) => {
+            console.log('READ BusinessPartners');
+            console.log(req.query);
+            return await BPsrv.run(req.query);
+        });
         this.on('READ', 'Contracts', async (req, next) => {
             const contracts = await next();
             if (!contracts) return contracts;
@@ -64,7 +75,10 @@ class ContractService extends cds.ApplicationService {
                 const vendorMap = new Map(vendors.map(v => [v.BusinessPartner, v]));
 
                 contractsArray.forEach(contract => {
-                    contract.vendor = vendorMap.get(contract.vendorId);
+                    const vendor = vendorMap.get(contract.vendorId);
+
+                    contract.vendorName =
+                        vendor?.BusinessPartnerFullName || '';
                 });
             } catch (err) {
                 console.error('Falha ao expandir Business Partner remotos:', err.message);

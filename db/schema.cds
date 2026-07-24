@@ -23,7 +23,6 @@ entity Contracts : cuid, managed {
 
     vendorId       : String(10) @assert.notNull @title: 'Vendor ID';
 
-    vendor         : Association to external.A_BusinessPartner on vendor.BusinessPartner = vendorId;
 
     items          : Composition of many ContractItems on items.contract = $self;
 }

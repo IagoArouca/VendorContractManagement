@@ -10,10 +10,15 @@ service ContractService @(path:'/browse') {
             { grant:['*'], to:'Manager' },
             { grant:['Approval'], to:'Approver' }
         ])
-        as projection on my.Contracts
-        actions {
+        as projection on my.Contracts {
+
+            *,
+            virtual vendorName : String(255)
+
+        } actions {
             action approveContract() returns Contracts;
         };
+
 
     @readonly
     entity BusinessPartners as projection on external.A_BusinessPartner {
@@ -22,4 +27,5 @@ service ContractService @(path:'/browse') {
         BusinessPartnerGrouping,
         BusinessPartnerCategory
     };
+
 }

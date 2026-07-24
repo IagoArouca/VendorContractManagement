@@ -12,6 +12,7 @@ default-*.json
 .env
 .env.*
 !.env.example
+.default-env.json
 
 # MTA
 mta_archives/
