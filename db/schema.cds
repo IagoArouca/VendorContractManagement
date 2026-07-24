@@ -1,6 +1,7 @@
 namespace sapanalytics.vendorcontracts;
 
-using { cuid, managed, Country} from '@sap/cds/common';
+using { API_BUSINESS_PARTNER as external } from '../srv/external/API_BUSINESS_PARTNER';
+using { cuid, managed } from '@sap/cds/common';
 
 type ContractStatus : String enum {
     Draft = 'D';
@@ -21,6 +22,8 @@ entity Contracts : cuid, managed {
     currency       : String(3) default 'BRL' @title: 'Currency';
 
     vendorId       : String(10) @assert.notNull @title: 'Vendor ID';
+
+    vendor         : Association to external.A_BusinessPartner on vendor.BusinessPartner = vendorId;
 
     items          : Composition of many ContractItems on items.contract = $self;
 }

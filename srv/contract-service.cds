@@ -9,7 +9,5 @@ service ContractService @(path: '/browse') {
         { grant: ['Approval'], to: 'Approver' }
     ]) as projection on my.Contracts;
 
-    entity ContractItems as projection on my.ContractItems;
-
     action approveContract(contractId: my.Contracts:ID) returns Contracts;
 }

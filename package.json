@@ -6,19 +6,24 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "@sap-cloud-sdk/connectivity": "^4",
+    "@sap-cloud-sdk/http-client": "^4",
+    "@sap-cloud-sdk/resilience": "^4",
     "@sap/cds": "^8",
-    "express": "^4",
     "@sap/xssec": "^4",
+    "express": "^4",
     "passport": "^0.7.0"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^1",
-    "@sap/cds-dk": "^8"
+    "@sap/cds-dk": "^8",
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
   },
   "scripts": {
     "start": "cds-serve",
     "watch": "cds watch",
-    "test": "jest"
+    "test": "jest --runInBand --detectOpenHandles"
   },
   "cds": {
     "requires": {
@@ -27,35 +32,47 @@
       },
       "auth": {
         "kind": "mocked",
-          "users": {
-            "viewer": {
-              "password": "viewer",
-              "roles": [
-                "Viewer"
-              ]
-            },
-            "manager": {
-              "password": "manager",
-              "roles": [
-                "Manager"
-              ]
-            },
-            "approver": {
-              "password": "approver",
-              "roles": [
-                "Approver"
-              ]
-            },
-            "admin": {
-              "password": "admin",
-              "roles": [
-                "Viewer",
-                "Manager",
-                "Approver"
-              ]
+        "users": {
+          "viewer": {
+            "password": "viewer",
+            "roles": [
+              "Viewer"
+            ]
+          },
+          "manager": {
+            "password": "manager",
+            "roles": [
+              "Manager"
+            ]
+          },
+          "approver": {
+            "password": "approver",
+            "roles": [
+              "Approver"
+            ]
+          },
+          "admin": {
+            "password": "admin",
+            "roles": [
+              "Viewer",
+              "Manager",
+              "Approver"
+            ]
+          }
+        }
+      },
+      "API_BUSINESS_PARTNER": {
+        "kind": "odata-v2",
+        "model": "srv/external/API_BUSINESS_PARTNER",
+        "[development]": {
+          "credentials": {
+            "url": "https://sandbox.api.sap.com/s4hanacloud/sap/opu/odata/sap/API_BUSINESS_PARTNER",
+            "headers": {
+                "APIKey": "{env:SAP_API_KEY}"
             }
           }
-    }
+        }
+      }
     },
     "profile": "development",
     "sql": {

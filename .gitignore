@@ -3,9 +3,15 @@ target/
 _out/
 gen/
 
+
 .cdsrc-private.json
 default-*.json
 *.sqlite
+
+# Environment
+.env
+.env.*
+!.env.example
 
 # MTA
 mta_archives/
