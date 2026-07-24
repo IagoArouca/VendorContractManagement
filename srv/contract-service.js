@@ -74,10 +74,10 @@ class ContractService extends cds.ApplicationService {
         });
 
         this.on('approveContract', async (req) => {
-            const { contractId } = req.data;
+            const { ID } = req.params[0];
 
             const contract = await cds.tx(req).run(
-                SELECT.one.from(Contracts).where({ ID: contractId })
+                SELECT.one.from(Contracts).where({ ID: ID})
             );
 
             if (!contract) {
@@ -85,15 +85,13 @@ class ContractService extends cds.ApplicationService {
             }
 
             await cds.tx(req).run(
-                UPDATE(Contracts).set({ status: 'A' }).where({ ID: contractId })
+                UPDATE(Contracts).set({ status: 'A' }).where({ ID: ID })
             );
 
             return await cds.tx(req).run(
-                SELECT.one.from(Contracts).where({ ID: contractId })
+                SELECT.one.from(Contracts).where({ ID: ID })
             );
         });
-
-        
 
         return super.init();
     }

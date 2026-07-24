@@ -9,26 +9,35 @@
     "@sap-cloud-sdk/connectivity": "^4",
     "@sap-cloud-sdk/http-client": "^4",
     "@sap-cloud-sdk/resilience": "^4",
-    "@sap/cds": "^8",
+    "@sap/cds": "^10.0.4",
     "@sap/xssec": "^4",
     "express": "^4",
     "passport": "^0.7.0"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^1",
-    "@sap/cds-dk": "^8",
+    "@cap-js/sqlite": "^2",
+    "cds-plugin-ui5": "^0.13.0",
     "jest": "^30.4.2",
+    "mbt": "^1.2.29",
+    "rimraf": "^5.0.5",
     "supertest": "^7.2.2"
   },
   "scripts": {
     "start": "cds-serve",
-    "watch": "cds watch",
-    "test": "jest --runInBand --detectOpenHandles"
+    "watch": "cds watch --profile development",
+    "test": "jest --runInBand --detectOpenHandles",
+    "watch-vendor-contracts-ui": "cds watch --open sapanalytics.vendorcontracts.vendorcontractsui/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "undeploy": "cf undeploy vendor-contracts --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
   },
   "cds": {
     "requires": {
       "db": {
-        "kind": "sql"
+        "kind": "sqlite",
+        "credentials": {
+          "url": "db.sqlite"
+        }
       },
       "auth": {
         "kind": "mocked",
@@ -68,7 +77,7 @@
           "credentials": {
             "url": "https://sandbox.api.sap.com/s4hanacloud/sap/opu/odata/sap/API_BUSINESS_PARTNER",
             "headers": {
-                "APIKey": "{env:SAP_API_KEY}"
+              "APIKey": "{env:SAP_API_KEY}"
             }
           }
         }
@@ -78,5 +87,11 @@
     "sql": {
       "native_typer": true
     }
-  }
+  },
+  "workspaces": [
+    "app/*"
+  ],
+  "sapux": [
+    "app/vendor-contracts-ui"
+  ]
 }

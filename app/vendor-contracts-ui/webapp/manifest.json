@@ -1,0 +1,183 @@
+{
+  "_version": "1.83.0",
+  "sap.app": {
+    "id": "sapanalytics.vendorcontracts.vendorcontractsui",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.22.0",
+      "toolsId": "70afae45-78d5-40f3-bacb-31eebe8d5747"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/browse/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.01"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "VendorContract-manage": {
+          "semanticObject": "VendorContract",
+          "action": "manage",
+          "title": "{{VendorContract-manage.flpTitle}}",
+          "subTitle": "{{VendorContract-manage.flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.150.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "sapanalytics.vendorcontracts.vendorcontractsui.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "ContractsList",
+          "target": "ContractsList"
+        },
+        {
+          "pattern": "Contracts({key}):?query:",
+          "name": "ContractsObjectPage",
+          "target": "ContractsObjectPage"
+        },
+        {
+          "pattern": "Contracts({key})/items({key2}):?query:",
+          "name": "ContractItemsObjectPage",
+          "target": "ContractItemsObjectPage"
+        }
+      ],
+      "targets": {
+        "ContractsList": {
+          "type": "Component",
+          "id": "ContractsList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/Contracts",
+              "variantManagement": "Page",
+              "navigation": {
+                "Contracts": {
+                  "detail": {
+                    "route": "ContractsObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ContractsObjectPage": {
+          "type": "Component",
+          "id": "ContractsObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/Contracts",
+              "navigation": {
+                "items": {
+                  "detail": {
+                    "route": "ContractItemsObjectPage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ContractItemsObjectPage": {
+          "type": "Component",
+          "id": "ContractItemsObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/Contracts/items"
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  },
+  "sap.fe": {
+    "app": {
+      "enableLazyLoading": true
+    }
+  }
+}
