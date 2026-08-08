@@ -21,6 +21,7 @@
         "type": "OData",
         "settings": {
           "annotations": [],
+          "localUri": "localService/metadata.xml",
           "odataVersion": "4.01"
         }
       }
@@ -39,6 +40,9 @@
         }
       }
     }
+  },
+  "sap.cloud": {
+    "service": "vendorcontracts"
   },
   "sap.ui": {
     "technology": "UI5",

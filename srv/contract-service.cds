@@ -13,10 +13,17 @@ service ContractService @(path:'/browse') {
         as projection on my.Contracts {
 
             *,
-            virtual vendorName : String(255)
+            virtual vendorName : String(255),
+            virtual statusCriticality : Integer
 
         } actions {
+            @cds.odata.bindingparameter.name: '_it'
+            @Common.SideEffects: { TargetProperties: ['_it/status'] }
             action approveContract() returns Contracts;
+
+            @cds.odata.bindingparameter.name: '_it'
+            @Common.SideEffects: { TargetProperties: ['_it/status'] }
+            action rejectContract() returns Contracts;
         };
 
 
@@ -27,5 +34,10 @@ service ContractService @(path:'/browse') {
         BusinessPartnerGrouping,
         BusinessPartnerCategory
     };
+
+    @readonly
+    entity ContractStatuses as projection on my.ContractStatuses;
+
+
 
 }

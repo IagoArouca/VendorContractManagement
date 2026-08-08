@@ -6,8 +6,10 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "@cap-js/cds-types": "^0.18.0",
     "@sap-cloud-sdk/connectivity": "^4",
     "@sap-cloud-sdk/http-client": "^4",
+    "@sap-cloud-sdk/odata-v2": "^4.8.0",
     "@sap-cloud-sdk/resilience": "^4",
     "@sap/cds": "^10.0.4",
     "@sap/xssec": "^4",
@@ -17,6 +19,7 @@
   "devDependencies": {
     "@cap-js/sqlite": "^2",
     "cds-plugin-ui5": "^0.13.0",
+    "dotenv": "^17.4.2",
     "jest": "^30.4.2",
     "mbt": "^1.2.29",
     "rimraf": "^5.0.5",
@@ -72,15 +75,13 @@
       },
       "API_BUSINESS_PARTNER": {
         "kind": "odata-v2",
-        "model": "srv/external/API_BUSINESS_PARTNER",
-        "[development]": {
-          "credentials": {
-            "url": "https://sandbox.api.sap.com/s4hanacloud/sap/opu/odata/sap/API_BUSINESS_PARTNER",
-            "headers": {
-              "APIKey": "{env:SAP_API_KEY}"
-            }
-          }
-        }
+        "model": "srv/external/API_BUSINESS_PARTNER"
+      },
+      "API_PURCHASECONTRACT_PROCESS_SRV_0002": {
+        "kind": "odata-v2",
+        "model": "srv/external/API_PURCHASECONTRACT_PROCESS_SRV_0002",
+        "csrf": true,
+        "csrfInBatch": true
       }
     },
     "profile": "development",
