@@ -2,74 +2,143 @@ _schema-version: 3.3.0
 ID: vendor-contracts
 description: Enterprise-grade Vendor Contract Management Side-by-Side Extension
 version: 1.0.0
+
 modules:
-- name: vendor-contracts-srv
-  type: nodejs
-  path: gen/srv
-  provides:
-  - name: srv-api
-    properties:
-      srv-url: ${default-url}
-  parameters:
-    buildpack: nodejs_buildpack
-    instances: 1
-  build-parameters:
-    builder: npm-ci
-- name: vendor-contracts-app-content
-  type: com.sap.application.content
-  path: .
-  requires:
-  - name: vendor-contracts-repo-host
-    parameters:
-      content-target: true
-  build-parameters:
-    build-result: resources
+  # --------------------- CAP SERVICE MODULE ---------------------
+  - name: vendor-contracts-srv
+    type: nodejs
+    path: gen/srv
     requires:
-    - artifacts:
-      - sapanalyticsvendorcontractsvendorcontractsui.zip
-      name: sapanalyticsvendorcontractsvendorcontractsui
-      target-path: resources/
-- name: sapanalyticsvendorcontractsvendorcontractsui
-  type: html5
-  path: app/vendor-contracts-ui
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm install
-    - npm run build:cf
-    supported-platforms: []
+      - name: vendor-contracts-db
+      - name: vendor-contracts-auth
+      - name: vendor-contracts-destination-service
+      - name: vendor-contracts-connectivity
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    parameters:
+      buildpack: nodejs_buildpack
+      instances: 1
+      memory: 512M
+    build-parameters:
+      builder: npm-ci
+
+  # --------------------- HANA DB DEPLOYER MODULE ---------------------
+  - name: vendor-contracts-db-deployer
+    type: hdb
+    path: gen/db
+    requires:
+      - name: vendor-contracts-db
+      - name: vendor-contracts-auth
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 256M
+
+  # --------------------- UI CONTENT DEPLOYER MODULE ---------------------
+  - name: vendor-contracts-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: vendor-contracts-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - sapanalyticsvendorcontractsvendorcontractsui.zip
+          name: sapanalyticsvendorcontractsvendorcontractsui
+          target-path: resources/
+
+  # --------------------- HTML5 UI MODULE ---------------------
+  - name: sapanalyticsvendorcontractsvendorcontractsui
+    type: html5
+    path: app/vendor-contracts-ui
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+
 resources:
-- name: vendor-contracts-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: vendor-contracts-html5-service
-    service-plan: app-host
-- name: vendor-contracts-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: false
-      init_data:
-        instance:
-          destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: vendor-contracts-destination-service
-    service-plan: lite
+  # --------------------- SAP HANA CLOUD HDI CONTAINER ---------------------
+  - name: vendor-contracts-db
+    type: com.sap.hana
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+
+  # --------------------- XSUAA SERVICE ---------------------
+  - name: vendor-contracts-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: vendor-contracts
+        tenant-mode: dedicated
+
+  # --------------------- HTML5 REPOSITORY HOST ---------------------
+  - name: vendor-contracts-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: vendor-contracts-html5-host
+      service-plan: app-host
+
+  # --------------------- HTML5 REPOSITORY RUNTIME (BUILD WORK ZONE) ---------------------
+  - name: vendor-contracts-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: vendor-contracts-html5-runtime
+      service-plan: app-runtime
+
+  # --------------------- DESTINATION SERVICE ---------------------
+  - name: vendor-contracts-destination-service
+    type: org.cloudfoundry.managed-service
+    requires:
+      - name: srv-api
+    parameters:
+      service: destination
+      service-name: vendor-contracts-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            destinations:
+              - Name: vendor-contracts-srv-api
+                Description: CAP Backend Service API Destination for UI5 & Work Zone
+                URL: ~{srv-api/srv-url}
+                Authentication: NoAuthentication
+                ForwardAuthToken: true
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+              - Name: ui5
+                Description: SAP UI5 CDN Content
+                URL: https://ui5.sap.com
+                Authentication: NoAuthentication
+            existing_destinations_policy: update
+
+  - name: vendor-contracts-connectivity
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: connectivity
+      service-plan: lite
+
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
+
 build-parameters:
   before-all:
-  - builder: custom
-    commands:
-    - npm ci
-    - npx cds build --production
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
