@@ -1,14 +1,17 @@
 using { sapanalytics.vendorcontracts as my } from '../db/schema';
 using { API_BUSINESS_PARTNER as external } from './external/API_BUSINESS_PARTNER';
 
-service ContractService @(path:'/browse') {
+service ContractService @(
+    path:'/browse',
+    requires: 'authenticated-user'
+    ) {
 
     @odata.draft.enabled
     entity Contracts
         @(restrict: [
             { grant:['READ'], to:'Viewer' },
             { grant:['*'], to:'Manager' },
-            { grant:['Approval'], to:'Approver' }
+            { grant:['READ', 'UPDATE'], to:'Approver' }
         ])
         as projection on my.Contracts {
 
@@ -28,6 +31,9 @@ service ContractService @(path:'/browse') {
 
 
     @readonly
+    @(restrict: [
+        { grant: ['READ'], to: ['Viewer', 'Manager', 'Approver'] }
+    ])
     entity BusinessPartners as projection on external.A_BusinessPartner {
         key BusinessPartner,
         BusinessPartnerFullName,
@@ -36,6 +42,9 @@ service ContractService @(path:'/browse') {
     };
 
     @readonly
+    @(restrict: [
+        { grant: ['READ'], to: ['Viewer', 'Manager', 'Approver'] }
+    ])
     entity ContractStatuses as projection on my.ContractStatuses;
 
 

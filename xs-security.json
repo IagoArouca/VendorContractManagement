@@ -1,7 +1,67 @@
 {
   "xsappname": "vendor-contracts",
   "tenant-mode": "dedicated",
-  "description": "Security profile of called application",
-  "scopes": [],
-  "role-templates": []
+  "description": "Security profile for Vendor Contract Management application",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.Viewer",
+      "description": "Visualização de contratos de fornecedores"
+    },
+    {
+      "name": "$XSAPPNAME.Manager",
+      "description": "Gestão e criação de contratos de fornecedores"
+    },
+    {
+      "name": "$XSAPPNAME.Approver",
+      "description": "Aprovação e liberação de contratos"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "VendorContractViewer",
+      "description": "Visualizador de Contratos",
+      "scope-references": [
+        "$XSAPPNAME.Viewer"
+      ]
+    },
+    {
+      "name": "VendorContractManager",
+      "description": "Gestor de Contratos",
+      "scope-references": [
+        "$XSAPPNAME.Viewer",
+        "$XSAPPNAME.Manager"
+      ]
+    },
+    {
+      "name": "VendorContractApprover",
+      "description": "Aprovador de Contratos",
+      "scope-references": [
+        "$XSAPPNAME.Viewer",
+        "$XSAPPNAME.Approver"
+      ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "Vendor_Contract_Viewer",
+      "description": "Acesso de Leitura ao Vendor Contract Management",
+      "role-template-references": [
+        "$XSAPPNAME.VendorContractViewer"
+      ]
+    },
+    {
+      "name": "Vendor_Contract_Manager",
+      "description": "Acesso de Gestor ao Vendor Contract Management",
+      "role-template-references": [
+        "$XSAPPNAME.VendorContractManager"
+      ]
+    },
+    {
+      "name": "Vendor_Contract_Approver",
+      "description": "Acesso de Aprovador ao Vendor Contract Management",
+      "role-template-references": [
+        "$XSAPPNAME.VendorContractApprover"
+      ]
+    }
+  ]
 }
