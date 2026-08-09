@@ -1,5 +1,3 @@
-# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-
 specVersion: "3.0"
 metadata:
   name: sapanalytics.vendorcontracts.vendorcontractsui
@@ -13,16 +11,8 @@ builder:
       - /test/**
       - /localService/**
   customTasks:
-    - name: deploy-to-cpp
-      afterTask: generateCachebusterInfo
-      configuration:
-        enabled: true
-        taskConfiguration:
-          UI5ApplicationName: vendorcontractsui
-          target:
-            destination: HTML5Repository
     - name: ui5-task-zipper
-      afterTask: deploy-to-cpp
+      afterTask: generateCachebusterInfo
       configuration:
         archiveName: sapanalyticsvendorcontractsvendorcontractsui
         relativePaths: true

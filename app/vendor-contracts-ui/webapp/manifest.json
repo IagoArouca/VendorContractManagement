@@ -42,6 +42,7 @@
     }
   },
   "sap.cloud": {
+    "public": true,
     "service": "vendorcontracts"
   },
   "sap.ui": {

@@ -128,7 +128,7 @@ annotate ContractService.Contracts with @(
             Action: 'ContractService.approveContract',
             Label: 'Aprovar Contrato',
             Determining: true,
-            Criticality: #Success,
+            Criticality: #Positive,
             @UI.Hidden: (status = 'A' or status = 'R')
         },
         {

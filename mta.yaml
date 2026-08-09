@@ -20,9 +20,12 @@ modules:
     parameters:
       buildpack: nodejs_buildpack
       instances: 1
-      memory: 512M
+      memory: 1024M
+      disk-quota: 1024M
     build-parameters:
-      builder: npm-ci
+      builder: custom
+      commands:
+        - npm install --production --legacy-peer-deps
 
   # --------------------- HANA DB DEPLOYER MODULE ---------------------
   - name: vendor-contracts-db-deployer
@@ -66,7 +69,7 @@ modules:
 resources:
   # --------------------- SAP HANA CLOUD HDI CONTAINER ---------------------
   - name: vendor-contracts-db
-    type: com.sap.hana
+    type: org.cloudfoundry.managed-service
     parameters:
       service: hana
       service-plan: hdi-shared
@@ -140,5 +143,5 @@ build-parameters:
   before-all:
     - builder: custom
       commands:
-        - npm ci
-        - npx cds build --production
+        - npm install --legacy-peer-deps
+        - ./node_modules/.bin/cds build --production
